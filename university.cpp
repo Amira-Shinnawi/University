@@ -45,7 +45,9 @@ public:
     {
         return this->requiredGPA;
     }
+    ~Department(){}
 };
+
 class Person
 {
 private:
@@ -55,13 +57,20 @@ private:
     int age;
 
 public:
-    void setId(int i)
+Person(int id, string name,int age,char gender){
+this->id = id;
+this->name = name;
+this->age = age;
+this->gender = gender;
+
+}
+    void setId(int id)
     {
-        this->id = i;
+        this->id = id;
     }
     int getId()
     {
-        return id;
+        return this->id;
     }
 
     void setName(string name)
@@ -70,7 +79,7 @@ public:
     }
     string getName()
     {
-        return name;
+        return this->name;
     }
 
     void setGender(char gender)
@@ -79,7 +88,7 @@ public:
     }
     char getGender()
     {
-        return gender;
+        return this->gender;
     }
 
     void setAge(int age)
@@ -88,9 +97,10 @@ public:
     }
     int getAge()
     {
-        return age;
+        return this->age;
     }
 };
+
 class Student : public Person
 {
 private:
@@ -99,15 +109,12 @@ private:
     float gpa;
 
 public:
-    Student()
+    Student(int id,string name ,int age,char gender,int level, float gpa):Person(id,name,age,gender)
     {
-        cout << "Student default constructor" << endl;
-    }
-    Student(int id, int level, float gpa)
-    {
-        setId(id);
+       
         this->level = level;
         this->gpa = gpa;
+       
     }
     void setLevel(int level)
     {
@@ -125,34 +132,28 @@ public:
     {
         return this->gpa;
     }
+    ~Student(){
+
+    }
 };
+
 class Professor : public Person
 {
 private:
-    int id;
     int salary;
-    string department;
     string degree;
-
+    Department* department;
 public:
-    Professor()
+
+    Professor(int id,string name,int age, char gender,Department *department,int salary, string degree):
+        Person(id,name,age,gender)
     {
-        cout << "Professor default constructor" << endl;
-    }
-    Professor(int id, int salary, string department, string degree)
-    {
-        setId(id);
+        
         this->salary = salary;
-        this->department = department;
         this->degree = degree;
-    }
-    void setId(int i)
-    {
-        this->id = i;
-    }
-    int getId()
-    {
-        return id;
+        this->department = department;
+
+
     }
     void setSalary(int s)
     {
@@ -163,13 +164,13 @@ public:
         return salary;
     }
 
-    void setDepartment(string d)
+    void setDepartment(Department * department)
     {
-        this->department = d;
+        this->department = department;
     }
-    string getDepartment()
+    Department* getDepartment()
     {
-        return department;
+        return this->department;
     }
 
     void setDegree(string degree)
@@ -180,23 +181,25 @@ public:
     {
         return degree;
     }
+    ~Professor(){}
 };
+
 class Course
 {
 private:
     string courseName;
     int courseHours;
-    int courseCode;
-    string professor;
-
+    string courseCode;
+    Professor* professor;
+    vector<Course*> prerequisites;
+    vector<Student*> students;
 public:
-    // default contructor
     Course()
     {
         cout << "Course default constructor" << endl;
     }
 
-    Course(string courseName, int courseHours, int courseCode, string professor)
+    Course(string courseName, string courseCode,int courseHours,vector<Course*>preCourse,Professor* professor,vector<Student*>student)
     {
         this->courseName = courseName;
         this->courseHours = courseHours;
@@ -207,7 +210,7 @@ public:
     {
         this->courseName = courseName;
     }
-    void setCourseCode(int courseCode)
+    void setCourseCode(string courseCode)
     {
         this->courseCode = courseCode;
     }
@@ -215,28 +218,31 @@ public:
     {
         this->courseHours = courseHours;
     }
-    void setProfessor(string professor)
+    void setProfessor(Professor* professor)
     {
         this->professor = professor;
     }
 
     string getCoursename()
     {
-        return courseName;
+        return this->courseName;
     }
     int getCourseHours()
     {
-        return courseHours;
+        return this->courseHours;
     }
-    int getCourseCode()
+    string getCourseCode()
     {
-        return courseCode;
+        return this->courseCode;
     }
-    string getProffesor()
+    Professor* getProffesor()
     {
-        return professor;
+        return this->professor;
+    }
+    ~Course(){
     }
 };
+
 class University
 {
 private:
@@ -262,9 +268,9 @@ public:
         }
     }
     ///////////////////////////////////COURSE//////////////////////////////////////////////////////////
-    void addCourses(string courseName, int courseHours, int courseCode, string professor)
+    void addCourses(string courseName, string courseCode,int courseHours,vector<Course*>prerequiestis,Professor*prof,vector<Student*>stu)
     {
-        Course course(courseName, courseHours, courseCode, professor);
+        Course course(courseName, courseCode,courseHours,prerequiestis,prof,stu);
         courses.push_back(course);
     }
     void PrintCourses()
@@ -294,11 +300,11 @@ public:
             cout << "Invalid index" << endl;
         }
     }
-    void SearchCourse(int coursecode)
+    void SearchCourse(string coursecode)
     {
-        for (int i = 0; i < courses.size(); i++)
+         for (int i = 0; i < courses.size(); i++)
         {
-            if (coursecode == courses[i].getCourseCode())
+            if (coursecode == departments[i].getName())
             {
                 cout << "Course Name : " << courses[i].getCoursename() << endl;
                 cout << "Course Hour: " << courses[i].getCourseHours() << endl;
@@ -324,9 +330,9 @@ public:
         }
     }
     ////////////////////////////////PROFESSOR////////////////////////////////////////////////////
-    void addProfessors(int id, int salary, string department, string degree)
+    void addProfessors(int id, string name,int age,char gender,Department*depa,int salary, string degree)
     {
-        Professor professor(id, salary, department, degree);
+        Professor professor(id,name,age,gender,depa,salary,degree);
         professors.push_back(professor);
     }
     void printProfessor()
@@ -339,7 +345,7 @@ public:
         {
             for (int i = 0; i < professors.size(); i++)
             {
-                cout << "Professor ID: " << professors[i].getId() << " Professor Salary: " << professors[i].getSalary() << " Professor Department: " << professors[i].getDepartment() << " Professor: " << professors[i].getDegree() << endl;
+                cout << "Professor ID: " << professors[i].getId() << " Professor Salary: " << professors[i].getSalary() << " Professor Department: " << professors[i].getDepartment()<< " Professor: " << professors[i].getDegree() <<"Professor Name: "<<professors[i].getName()<<"Professor Gender: "<<professors[i].getGender()<<" Professor Age: "<<professors[i].getAge()<< endl;
             }
         }
     }
@@ -366,6 +372,11 @@ public:
                 cout << "Professor Salary: " << professors[i].getSalary() << endl;
                 cout << "Professor Department: " << professors[i].getDepartment() << endl;
                 cout << "Professor Degree: " << professors[i].getDegree() << endl;
+                cout << "Professor Name: " << professors[i].getName() << endl;
+                cout << "Professor Gender: " << professors[i].getGender() << endl;
+                cout << "Professor Age: " << professors[i].getAge() << endl;
+
+
             }
             else
             {
@@ -447,9 +458,9 @@ public:
         }
     }
     ////////////////////////STUDENT//////////////////////////////////////////
-    void addStudent(int id ,int level, float gpa)
+    void addStudent(int id ,string name,int age,char gender,int level, float gpa )
     {
-        Student student(id,level, gpa);
+        Student student(id,name,age,gender,level,gpa);
         students.push_back(student);
     }
     void printStudents()
@@ -462,7 +473,7 @@ public:
         {
             for (int i = 0; i < students.size(); i++)
             {
-                cout << "ID: " << students[i].getId() << " Level: " << students[i].getLevel() << " GPA: " << students[i].getGpa() << endl;
+                cout << "ID: " << students[i].getId() << " Level: " << students[i].getLevel() << " GPA: " << students[i].getGpa() << "Student Name: "<<students[i].getName()<<"Student Gender: "<<students[i].getGender()<<"Student Age: "<<students[i].getAge()<< endl;
             }
         }
     }
@@ -488,6 +499,9 @@ public:
                 cout << "Student ID: " << students[i].getId() << endl;
                 cout << "Student Level: " << students[i].getLevel() << endl;
                 cout << "Student GPA: " << students[i].getGpa() << endl;
+                 cout << "Student Name: " << students[i].getName() << endl;
+                  cout << "Student Gender: " << students[i].getGender() << endl;\
+                   cout << "Student Age: " << students[i].getAge() << endl;
             }
             else
             {
@@ -507,233 +521,92 @@ public:
             cout << "Invalid index." << endl;
         }
     }
+    void addData()
+    {
+        Department d1("Web Development", 50, 3.2);
+        departments.push_back(d1);
+        Department d2("Cyber Security", 33, 3.5);
+        departments.push_back(d2);
+        Department d3("Artificial Intelligence", 20, 3.0);
+        departments.push_back(d3);
+        Department d4("Information Systems", 125, 2.5);
+        departments.push_back(d4);
+
+        Student s1(1,"Ahmed Ali", 19, 'M', 2, 2.74);
+        students.push_back(s1);
+        Student s2(2,"Mirna Hussein", 22, 'F', 4, 3.68);
+        students.push_back(s2);
+        Student s3(3,"Hamada Hossam", 28, 'M', 3, 2.37);
+        students.push_back(s3);
+        Student s4(4,"Taghreed Mohsen", 20, 'F', 3, 3);
+        students.push_back(s4);
+        Student s5(5,"Yasmin Belal", 18, 'F', 1, 3.71);
+        students.push_back(s5);
+        Student s6(6,"Amr Diab", 50, 'M', 4, 2.01);
+        students.push_back(s6);
+        Student s7(7,"Tamer Hosny", 30, 'M', 3, 2.02);
+        students.push_back(s7);
+        Student s8(8,"Ahmed Alaa", 21, 'M', 2, 2.49);
+        students.push_back(s8);
+
+       Professor p1(1,"Mohamed Ali", 56, 'M', &d1, 12000, "Masters");
+        professors.push_back(p1);
+        Professor p2(2,"Ehsan Ahmed", 43, 'M', &d2, 8500, "Masters");
+        professors.push_back(p2);
+        Professor p3(3,"Ahmed Mohsen", 68, 'M', &d3, 19380, "Masters");
+        professors.push_back(p3);
+        Professor p4(4,"Abdelhady", 61, 'M', &d4, 22728, "Masters");
+        professors.push_back(p4);
+        Professor p5(5,"Taghreed Mohsen", 49, 'F', &d2, 11068, "Masters");
+        professors.push_back(p5);
+
+
+
+        vector<Student*> st1;
+        st1.push_back(&s1);
+        st1.push_back(&s2);
+        st1.push_back(&s3);
+        st1.push_back(&s4);
+        vector<Student*> st2;
+        st2.push_back(&s5);
+        st2.push_back(&s6);
+        st2.push_back(&s7);
+        st2.push_back(&s8);
+        Course c1("HTML", "HTML123", 12, vector<Course*>(), &p1, st1);
+        courses.push_back(c1);
+        vector<Course*> crs1;
+        crs1.push_back(&c1);
+        Course c2("CSS", "CSS123", 9, crs1,&p3, st2);
+        courses.push_back(c2);
+        Course c3("Networks", "Net521", 18, crs1, &p5, st2);
+        courses.push_back(c3);
+    }
+
+    void printAll()
+    {
+        for(int i=0; i<departments.size(); i++)
+        {
+            cout<<"Department: "<<departments[i].getName()<<endl;
+        }
+        for(int i=0; i<professors.size(); i++)
+        {
+            cout<<"Professor Name: "<<professors[i].getName()<<endl;
+        }
+        for(int i=0; i<students.size(); i++)
+        {
+            cout<<"Student Name: "<<students[i].getName()<<endl;
+        }
+        for(int i=0; i<courses.size(); i++)
+        {
+            cout<<"Course Name: "<<courses[i].getCoursename()<<endl;
+        }
+    }
+    ~University(){}
 };
 University *University::instancePtr = NULL;
 
-int main()
-{
+int main(){
     University *uni = University::getInstance();
-
-    bool exit = false;
-    while (!exit)
-    {
-        int choice = 0;
-        cout << "\nSelect an option:\n\n";
-        cout << "(1) : Details of the Student\n";
-        cout << "(2) : Details of the Department\n";
-        cout << "(3) : Details of the Professor\n";
-        cout << "(4) : Details of the Courses\n";
-
-        cout << "[-1] : Back\n";
-        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
-        cout << "Enter your choice: ";
-        cin >> choice;
-
-        if (choice == 1)
-        {
-            int exit = 1;
-            while (exit != 0 && exit == 1)
-            {
-
-                int id, level;
-                float gpa;
-                cout << "Enter Your ID" << endl;
-                cin >> id;
-
-                cout << "Enter Your Level" << endl;
-                cin >> level;
-
-                cout << "Enter Your GPA" << endl;
-                cin >> gpa;
-
-                uni->addStudent(id, level, gpa);
-
-                cout << "Enter 0 for exit or 1 for continue to adding Student..." << endl;
-                cin >> exit;
-            }
-            uni->printStudents();
-
-            int index, newId, newLevel;
-            float newGPA;
-
-            cout << "Enter the index of the student you want to update: " << endl;
-            cin >> index;
-            cout << "Enter the new GPA: " << endl;
-            cin >> newGPA;
-
-            uni->updateStudent(index, newGPA);
-
-            uni->printStudents();
-            int id;
-            cout << "Enter your id for search..." << endl;
-            cin >> id;
-            uni->SearchStudent(id);
-
-            int deleteIndex;
-            cout << "Enter the index of the student you want to delete: " << endl;
-            cin >> deleteIndex;
-
-            uni->deleteStudent(deleteIndex);
-            uni->printStudents();
-        }
-        else if (choice == 2)
-        {
-            int exit = 1;
-            while (exit != 0 && exit == 1)
-            {
-
-                string name;
-                int capacity;
-                int requiredGPA;
-                cout << "Enter Department Name" << endl;
-                cin >> name;
-
-                cout << "Enter Department Capacity" << endl;
-                cin >> capacity;
-
-                cout << "Enter Required GPA" << endl;
-                cin >> requiredGPA;
-
-                uni->addDepartment(name, capacity, requiredGPA);
-
-                cout << "Enter 0 for exit or 1 for continue to adding Departments..." << endl;
-                cin >> exit;
-            }
-            uni->printDepartment();
-
-            int index, newrequiredGPA;
-
-            cout << "Enter the index of the student you want to update: " << endl;
-            cin >> index;
-            cout << "Enter the Required GPA: " << endl;
-            cin >> newrequiredGPA;
-
-            uni->updateDepartment(index, newrequiredGPA);
-
-            uni->printDepartment();
-            string name;
-            cout << "Enter Department Name for search..." << endl;
-            cin >> name;
-            uni->SearchDepartment(name);
-
-            int deleteIndex;
-            cout << "Enter the index of the Department you want to delete: " << endl;
-            cin >> deleteIndex;
-
-            uni->deleteDepartment(deleteIndex);
-            uni->printDepartment();
-        }
-        else if (choice == 3)
-        {
-            int exit = 1;
-            while (exit != 0 && exit == 1)
-            {
-
-                int id;
-                int salary;
-                string department;
-                string degree;
-                cout << "Enter Professor ID" << endl;
-                cin >> id;
-
-                cout << "Enter Professor Salary" << endl;
-                cin >> salary;
-
-                cout << "Enter Professor Department" << endl;
-                cin >> department;
-
-                cout << "Enter Professor Degree" << endl;
-                cin >> degree;
-
-                uni->addProfessors(id, salary, department, degree);
-
-                cout << "Enter 0 for exit or 1 for continue to adding Profeesors..." << endl;
-                cin >> exit;
-            }
-            uni->printProfessor();
-
-            int index, newsalary;
-
-            cout << "Enter the index of the Professor you want to update: " << endl;
-            cin >> index;
-            cout << "Enter Salary: " << endl;
-            cin >> newsalary;
-
-            uni->updateProfessor(index, newsalary);
-
-            uni->printProfessor();
-            int id;
-            cout << "Enter Professor ID for search..." << endl;
-            cin >> id;
-            uni->SearchProfessor(id);
-
-            int deleteIndex;
-            cout << "Enter the index of the Professor you want to delete: " << endl;
-            cin >> deleteIndex;
-
-            uni->deleteProfessor(deleteIndex);
-            uni->printProfessor();
-        }
-        else if (choice == 4)
-        {
-            int exit = 1;
-            while (exit != 0 && exit == 1)
-            {
-
-                string coursename;
-                int coursehour;
-                int coursecode;
-                string profdegree;
-                cout << "Enter Course Name" << endl;
-                cin >> coursename;
-
-                cout << "Enter Course Course Hour" << endl;
-                cin >> coursehour;
-
-                cout << "Enter Course Code" << endl;
-                cin >> coursecode;
-
-                cout << "Enter Professor Degree" << endl;
-                cin >> profdegree;
-
-                uni->addCourses(coursename, coursehour, coursecode, profdegree);
-
-                cout << "Enter 0 for exit or 1 for continue to adding Profeesors..." << endl;
-                cin >> exit;
-            }
-            uni->PrintCourses();
-
-            int index, newcourseHour;
-
-            cout << "Enter the index of the Course you want to update: " << endl;
-            cin >> index;
-            cout << "Enter Course Hour: " << endl;
-            cin >> newcourseHour;
-
-            uni->updateCourse(index, newcourseHour);
-
-            uni->PrintCourses();
-            int courseCode;
-            cout << "Enter Course Code for search..." << endl;
-            cin >> courseCode;
-            uni->SearchProfessor(courseCode);
-
-            int deleteIndex;
-            cout << "Enter the index of the Course you want to delete: " << endl;
-            cin >> deleteIndex;
-
-            uni->deleteCourse(deleteIndex);
-            uni->PrintCourses();
-        }
-        else if (choice == -1)
-        {
-            exit = true;
-            break;
-        }
-        else
-        {
-            cout << "Invalid choice!\n";
-        }
-    }
+   
     return 0;
 }
