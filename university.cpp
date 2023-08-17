@@ -190,7 +190,7 @@ private:
     string courseName;
     int courseHours;
     string courseCode;
-    Professor* professor;
+    Professor* professor;//pointer to Course course
     vector<Course*> prerequisites;
     vector<Student*> students;
 public:
@@ -251,7 +251,9 @@ private:
     vector<Department> departments;
     vector<Professor> professors;
     vector<Course> courses;
-    University() {}
+    University() {
+        addData();
+        }
 
 public:
     University(const University &obj) = delete;
@@ -317,17 +319,23 @@ public:
             }
         }
     }
-    void deleteCourse(int index)
+    void deleteCourse(string name)
     {
-        if (index >= 0 && index < courses.size())
+        bool found = false;
+    for (int i = 0; i < courses.size(); i++)
+    {
+        if (courses[i].getCoursename() == name)
         {
-            courses.erase(courses.begin() + index);
+            courses.erase(courses.begin() + i);
             cout << "Course deleted successfully!" << endl;
+            found = true;
+            break;
         }
-        else
-        {
-            cout << "Invalid index." << endl;
-        }
+    }
+    if (!found)
+    {
+        cout << "Course not found." << endl;
+    }
     }
     ////////////////////////////////PROFESSOR////////////////////////////////////////////////////
     void addProfessors(int id, string name,int age,char gender,Department*depa,int salary, string degree)
@@ -500,7 +508,7 @@ public:
                 cout << "Student Level: " << students[i].getLevel() << endl;
                 cout << "Student GPA: " << students[i].getGpa() << endl;
                  cout << "Student Name: " << students[i].getName() << endl;
-                  cout << "Student Gender: " << students[i].getGender() << endl;\
+                  cout << "Student Gender: " << students[i].getGender() << endl;
                    cout << "Student Age: " << students[i].getAge() << endl;
             }
             else
@@ -607,6 +615,8 @@ University *University::instancePtr = NULL;
 
 int main(){
     University *uni = University::getInstance();
-   
+   uni->printAll();
+   uni->deleteCourse("Net521");
+   uni->printAll();
     return 0;
 }
