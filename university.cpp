@@ -343,7 +343,7 @@ public:
     {
     bool courseFound = false;
     for (int i = 0; i < courses.size(); i++) {
-        if (courses[i].getCoursename() == name) {
+        if (courses[i].getCourseCode() == name) {
             courses.erase(courses.begin() + i);
             cout << "Course deleted successfully!" << endl;
             courseFound = true;
@@ -642,7 +642,7 @@ University *University::instancePtr = NULL;
 int main(){
     University *uni = University::getInstance();
     uni->printAll();
-    uni->deleteCourse("CSS");
+    uni->deleteCourse("Net521");
     uni->printAll();
     // uni->deleteDepartment("Web Development");
     // uni->printAll();
