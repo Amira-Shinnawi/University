@@ -205,6 +205,8 @@ public:
         this->courseHours = courseHours;
         this->courseCode = courseCode;
         this->professor = professor;
+        this->prerequisites= preCourse;
+        this->students = student;
     }
     void setCourseName(string courseName)
     {
@@ -223,6 +225,23 @@ public:
         this->professor = professor;
     }
 
+    vector<Course*> getPrerequisites()  {
+        return prerequisites;
+    }
+
+    void setPrerequisites(vector<Course*> preCourse) {
+        prerequisites = preCourse;
+    }
+
+    void setStudents(vector<Student*> student) {
+        students = student;
+    }
+
+    vector<Student*> getStudents()  {
+        return students;
+    }
+
+   
     string getCoursename()
     {
         return this->courseName;
@@ -252,8 +271,9 @@ private:
     vector<Professor> professors;
     vector<Course> courses;
     University() {
-        addData();
-        }
+       addData();
+
+    }
 
 public:
     University(const University &obj) = delete;
@@ -270,7 +290,7 @@ public:
         }
     }
     ///////////////////////////////////COURSE//////////////////////////////////////////////////////////
-    void addCourses(string courseName, string courseCode,int courseHours,vector<Course*>prerequiestis,Professor*prof,vector<Student*>stu)
+    void addCourses(string courseName, string courseCode, int courseHours, vector<Course*> prerequiestis, Professor* prof, vector<Student*> stu)
     {
         Course course(courseName, courseCode,courseHours,prerequiestis,prof,stu);
         courses.push_back(course);
@@ -321,20 +341,17 @@ public:
     }
     void deleteCourse(string name)
     {
-        bool found = false;
-    for (int i = 0; i < courses.size(); i++)
-    {
-        if (courses[i].getCoursename() == name)
-        {
+    bool courseFound = false;
+    for (int i = 0; i < courses.size(); i++) {
+        if (courses[i].getCoursename() == name) {
             courses.erase(courses.begin() + i);
             cout << "Course deleted successfully!" << endl;
-            found = true;
-            break;
+            courseFound = true;
+            break; // Exit the loop after deleting the course
         }
     }
-    if (!found)
-    {
-        cout << "Course not found." << endl;
+    if (!courseFound) {
+        cout << "Course not found: " << name << endl;
     }
     }
     ////////////////////////////////PROFESSOR////////////////////////////////////////////////////
@@ -392,17 +409,20 @@ public:
             }
         }
     }
-    void deleteProfessor(int index)
+    void deleteProfessor(string profName)
     {
-        if (index >= 0 && index < professors.size())
-        {
-            professors.erase(professors.begin() + index);
-            cout << "Professor deleted successfully!" << endl;
+        bool ProfFound = false;
+    for (int i = 0; i < students.size(); i++) {
+        if (professors[i].getName() == profName) {
+            professors.erase(professors.begin() + i);
+            cout << "Course deleted successfully!" << endl;
+            ProfFound = true;
+            break;
         }
-        else
-        {
-            cout << "Invalid index." << endl;
-        }
+    }
+    if (!ProfFound) {
+        cout << "Course not found: " << profName << endl;
+    }
     }
     ////////////////////////////DEPARTMENT//////////////////////////////////////////////
     void addDepartment(string name, int capacity, int requiredGPA)
@@ -453,17 +473,20 @@ public:
             }
         }
     }
-    void deleteDepartment(int index)
+    void deleteDepartment(string departname)
     {
-        if (index >= 0 && index < departments.size())
-        {
-            departments.erase(departments.begin() + index);
-            cout << "Department deleted successfully!" << endl;
+        bool departFound = false;
+    for (int i = 0; i < departments.size(); i++) {
+        if (departments[i].getName() == departname) {
+            departments.erase(departments.begin() + i);
+            cout << "Course deleted successfully!" << endl;
+            departFound = true;
+            break;
         }
-        else
-        {
-            cout << "Invalid index." << endl;
-        }
+    }
+    if (!departFound) {
+        cout << "Course not found: " << departname << endl;
+    }
     }
     ////////////////////////STUDENT//////////////////////////////////////////
     void addStudent(int id ,string name,int age,char gender,int level, float gpa )
@@ -517,17 +540,20 @@ public:
             }
         }
     }
-    void deleteStudent(int index)
+    void deleteStudent(string studentName)
     {
-        if (index >= 0 && index < students.size())
-        {
-            students.erase(students.begin() + index);
-            cout << "Student deleted successfully!" << endl;
+         bool StudentFound = false;
+    for (int i = 0; i < students.size(); i++) {
+        if (students[i].getName() == studentName) {
+            students.erase(students.begin() + i);
+            cout << "Course deleted successfully!" << endl;
+            StudentFound = true;
+            break;
         }
-        else
-        {
-            cout << "Invalid index." << endl;
-        }
+    }
+    if (!StudentFound) {
+        cout << "Course not found: " << studentName << endl;
+    }
     }
     void addData()
     {
@@ -615,8 +641,14 @@ University *University::instancePtr = NULL;
 
 int main(){
     University *uni = University::getInstance();
-   uni->printAll();
-   uni->deleteCourse("Net521");
-   uni->printAll();
+    uni->printAll();
+    uni->deleteCourse("CSS");
+    uni->printAll();
+    // uni->deleteDepartment("Web Development");
+    // uni->printAll();
+    // uni->deleteStudent("Ahmed Ali");
+    // uni->printAll();
+    // uni->deleteProfessor("Ehsan Ahmed");
+    // uni->printAll();
     return 0;
 }
